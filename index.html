@@ -9,32 +9,123 @@
 }
 
 body{
-    background:#0b1220;
-    color:white;
+    margin:0;
+    min-height:100vh;
     font-family:Arial,sans-serif;
+    color:white;
+    overflow:hidden;
+    background:linear-gradient(#5aa9ff,#bfe5ff);
     display:flex;
     justify-content:center;
     align-items:center;
-    min-height:100vh;
-    margin:0;
+}
+
+.cloud{
+    position:absolute;
+    background:white;
+    border-radius:50px;
+    opacity:.75;
+    animation:cloudMove linear infinite;
+}
+
+.cloud::before,
+.cloud::after{
+    content:"";
+    position:absolute;
+    background:white;
+    border-radius:50%;
+}
+
+.cloud::before{
+    width:70px;
+    height:70px;
+    top:-35px;
+    left:25px;
+}
+
+.cloud::after{
+    width:90px;
+    height:90px;
+    top:-50px;
+    left:80px;
+}
+
+.cloud1{
+    width:180px;
+    height:55px;
+    top:12%;
+    left:-250px;
+    animation-duration:55s;
+}
+
+.cloud2{
+    width:220px;
+    height:65px;
+    top:34%;
+    left:-300px;
+    animation-duration:75s;
+    animation-delay:10s;
+}
+
+.cloud3{
+    width:160px;
+    height:50px;
+    top:68%;
+    left:-220px;
+    animation-duration:65s;
+    animation-delay:20s;
+}
+
+@keyframes cloudMove{
+    from{ transform:translateX(-250px); }
+    to{ transform:translateX(130vw); }
+}
+
+.jet{
+    position:absolute;
+    left:-200px;
+    top:18%;
+    font-size:58px;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.35));
+    animation:flyby 26s linear infinite;
+    z-index:1;
+}
+
+.jet:nth-of-type(5){
+    top:72%;
+    animation-delay:14s;
+    animation-duration:32s;
+    font-size:48px;
+}
+
+@keyframes flyby{
+    0%{ transform:translateX(-250px) rotate(8deg); opacity:0; }
+    5%{ opacity:1; }
+    90%{ opacity:1; }
+    100%{ transform:translateX(130vw) rotate(8deg); opacity:0; }
 }
 
 .card{
-    background:#172033;
+    position:relative;
+    z-index:5;
+    background:rgba(11,18,32,.88);
+    backdrop-filter:blur(8px);
     padding:40px;
-    border-radius:15px;
+    border-radius:18px;
     width:430px;
-    box-shadow:0 0 25px rgba(0,0,0,.55);
+    box-shadow:0 0 35px rgba(0,0,0,.45);
+    border:1px solid rgba(255,255,255,.18);
 }
 
 h1{
     text-align:center;
     margin-bottom:8px;
+    letter-spacing:.5px;
 }
 
 p{
     text-align:center;
-    color:#b8c2d6;
+    color:#cbd5e1;
     margin-bottom:25px;
 }
 
@@ -72,7 +163,7 @@ button:disabled{
 
 .small{
     font-size:12px;
-    color:#8f9bb3;
+    color:#94a3b8;
     margin-top:18px;
     line-height:1.4;
 }
@@ -80,6 +171,13 @@ button:disabled{
 </head>
 
 <body>
+
+<div class="cloud cloud1"></div>
+<div class="cloud cloud2"></div>
+<div class="cloud cloud3"></div>
+
+<div class="jet">✈</div>
+<div class="jet">✈</div>
 
 <div class="card">
 
@@ -127,9 +225,7 @@ button:disabled{
 <option>4:00 PM</option>
 </select>
 
-<button id="submitButton" onclick="submitPilot()">
-Begin Session
-</button>
+<button id="submitButton" onclick="submitPilot()">Begin Session</button>
 
 <p class="small">
 Your simulator score may be added after your flight. Public results should use first name, last initial, and callsign only.
@@ -138,7 +234,6 @@ Your simulator score may be added after your flight. Public results should use f
 </div>
 
 <script>
-
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
 
 function submitPilot(){
@@ -155,12 +250,9 @@ function submitPilot(){
     const timeSlot = document.getElementById("timeSlot").value;
 
     if(!firstName || !lastInitial || !callsign || !aircraft || !timeSlot){
-
         alert("Please fill out all fields.");
-
         button.disabled = false;
         button.innerText = "Begin Session";
-
         return;
     }
 
@@ -179,7 +271,6 @@ function submitPilot(){
     })
     .then(response => response.json())
     .then(data => {
-
         alert("Check-in complete. Good luck, pilot.");
 
         document.getElementById("firstName").value = "";
@@ -189,20 +280,14 @@ function submitPilot(){
         document.getElementById("timeSlot").value = "";
 
         button.innerText = "Submitted";
-
     })
     .catch(error => {
-
         console.log(error);
-
         alert("Error submitting registration.");
-
         button.disabled = false;
         button.innerText = "Begin Session";
-
     });
 }
-
 </script>
 
 </body>
