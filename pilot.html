@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pilot Profile</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0b1220;
+    color:white;
+}
+
+.header{
+    text-align:center;
+    padding:35px 20px 20px;
+}
+
+.header h1{
+    margin:0;
+    font-size:42px;
+}
+
+.nav{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:25px;
+}
+
+.nav a{
+    color:white;
+    text-decoration:none;
+    padding:9px 12px;
+    background:#1d4ed8;
+    border-radius:8px;
+}
+
+.profile{
+    max-width:850px;
+    margin:auto;
+    background:#111827;
+    border-radius:14px;
+    padding:30px;
+    box-shadow:0 0 25px rgba(0,0,0,.35);
+}
+
+.callsign{
+    font-size:42px;
+    font-weight:bold;
+}
+
+.name{
+    color:#9ec8ff;
+    margin-bottom:25px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:#172033;
+    padding:18px;
+    border-radius:10px;
+}
+
+.stat h3{
+    margin:0 0 8px;
+    color:#9ec8ff;
+}
+
+.notes{
+    background:#172033;
+    padding:20px;
+    border-radius:10px;
+}
+
+.notes h3{
+    margin-top:0;
+    color:#9ec8ff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Pilot Profile</h1>
+</div>
+
+<div class="nav">
+    <a href="index.html">Register</a>
+    <a href="active.html">Recent Flights</a>
+    <a href="leaderboard.html">Leaderboard</a>
+</div>
+
+<div class="profile" id="profile">
+    Loading pilot profile...
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
+
+const params = new URLSearchParams(window.location.search);
+const pilotID = params.get("id");
+
+fetch(SCRIPT_URL)
+.then(response => response.json())
+.then(data => {
+
+    const pilot = data.find(p => String(p.pilotID) === String(pilotID));
+
+    if(!pilot){
+        document.getElementById("profile").innerHTML = "Pilot not found.";
+        return;
+    }
+
+    document.getElementById("profile").innerHTML = `
+        <div class="callsign">${pilot.callsign || "Unknown"}</div>
+        <div class="name">${pilot.firstName || ""} ${pilot.lastInitial || ""}</div>
+
+        <div class="grid">
+            <div class="stat">
+                <h3>Aircraft</h3>
+                ${pilot.aircraft || "Not listed"}
+            </div>
+
+            <div class="stat">
+                <h3>Kills</h3>
+                ${pilot.kills || 0}
+            </div>
+
+            <div class="stat">
+                <h3>Deaths</h3>
+                ${pilot.deaths || 0}
+            </div>
+
+            <div class="stat">
+                <h3>Session Time</h3>
+                ${pilot.timeSlot || "No time"}
+            </div>
+
+            <div class="stat">
+                <h3>Date</h3>
+                ${pilot.sessionDate || ""}
+            </div>
+
+            <div class="stat">
+                <h3>Score</h3>
+                ${pilot.score || 0}
+            </div>
+        </div>
+
+        <div class="notes">
+            <h3>Flight Notes</h3>
+            ${pilot.notes || "No notes added yet."}
+        </div>
+    `;
+});
+</script>
+
+</body>
+</html>
