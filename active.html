@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Active Pilots</title>
+<title>Recent Flights</title>
 
 <style>
 body{
@@ -77,9 +77,16 @@ body{
     font-weight:bold;
 }
 
-.callsign{
+.callsign a{
+    color:white;
+    text-decoration:none;
     font-size:22px;
     font-weight:bold;
+}
+
+.callsign a:hover{
+    color:#9ec8ff;
+    text-decoration:underline;
 }
 
 .aircraft{
@@ -111,7 +118,7 @@ body{
 
 <div class="nav">
     <a href="index.html">Register</a>
-    <a href="active.html">Active Pilots</a>
+    <a href="active.html">Recent Flights</a>
     <a href="leaderboard.html">Leaderboard</a>
 </div>
 
@@ -128,13 +135,12 @@ body{
     </div>
 
     <div id="pilotList">
-        <div class="empty">Loading pilots...</div>
+        <div class="empty">Loading flights...</div>
     </div>
 
 </div>
 
 <script>
-
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
 
 fetch(SCRIPT_URL)
@@ -148,7 +154,7 @@ fetch(SCRIPT_URL)
 
     if(data.length === 0){
         container.innerHTML =
-        '<div class="empty">No pilots checked in yet.</div>';
+        '<div class="empty">No flights recorded yet.</div>';
         return;
     }
 
@@ -159,7 +165,11 @@ fetch(SCRIPT_URL)
 
         row.innerHTML = `
             <div>
-                <div class="callsign">${pilot.callsign || "Unknown"}</div>
+                <div class="callsign">
+                    <a href="pilot.html?id=${pilot.pilotID}">
+                        ${pilot.callsign || "Unknown"}
+                    </a>
+                </div>
                 <div>${pilot.firstName || ""} ${pilot.lastInitial || ""}</div>
             </div>
 
@@ -181,12 +191,11 @@ fetch(SCRIPT_URL)
 .catch(error => {
 
     document.getElementById("pilotList").innerHTML =
-    '<div class="empty">Unable to load pilot data.</div>';
+    '<div class="empty">Unable to load flight data.</div>';
 
     console.log(error);
 
 });
-
 </script>
 
 </body>
