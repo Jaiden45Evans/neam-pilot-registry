@@ -90,6 +90,10 @@ body{
     color:#cbd5e1;
 }
 
+.time small{
+    color:#94a3b8;
+}
+
 .empty{
     padding:30px;
     text-align:center;
@@ -120,7 +124,7 @@ body{
     <div class="row header-row">
         <div>CALLSIGN</div>
         <div>AIRCRAFT</div>
-        <div>TIME SLOT</div>
+        <div>SESSION</div>
     </div>
 
     <div id="pilotList">
@@ -164,7 +168,8 @@ fetch(SCRIPT_URL)
             </div>
 
             <div class="time">
-                ${pilot.timeSlot || "No Time"}
+                <strong>${pilot.timeSlot || "No Time"}</strong><br>
+                <small>${pilot.sessionDate || ""}</small>
             </div>
         `;
 
