@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Search Pilots</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0b1220;
+    color:white;
+}
+
+.header{
+    text-align:center;
+    padding:35px 20px 20px;
+}
+
+.header h1{
+    margin:0;
+    font-size:42px;
+}
+
+.header p{
+    color:#b8c2d6;
+}
+
+.nav{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+}
+
+.nav a{
+    color:white;
+    text-decoration:none;
+    padding:9px 12px;
+    background:#1d4ed8;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.nav a:hover{
+    background:#2563eb;
+}
+
+.searchBox{
+    max-width:700px;
+    margin:0 auto 25px;
+    padding:0 20px;
+}
+
+input{
+    width:100%;
+    height:48px;
+    border:none;
+    border-radius:10px;
+    padding:12px;
+    font-size:17px;
+}
+
+.results{
+    max-width:1000px;
+    margin:auto;
+    padding:0 20px 40px;
+}
+
+.card{
+    background:#111827;
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:14px;
+    box-shadow:0 0 18px rgba(0,0,0,.3);
+}
+
+.card a{
+    color:white;
+    text-decoration:none;
+}
+
+.card a:hover{
+    color:#9ec8ff;
+    text-decoration:underline;
+}
+
+.callsign{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.meta{
+    color:#b8c2d6;
+    margin-top:6px;
+}
+
+.empty{
+    text-align:center;
+    color:#94a3b8;
+    margin-top:30px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Search Pilots</h1>
+    <p>New England Air Museum Simulator Operations Center</p>
+</div>
+
+<div class="nav">
+    <a href="index.html">Register</a>
+    <a href="active.html">Recent Flights</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="search.html">Search</a>
+</div>
+
+<div class="searchBox">
+    <input id="searchInput" placeholder="Search by callsign, first name, aircraft, or notes...">
+</div>
+
+<div class="results" id="results">
+    <div class="empty">Loading pilots...</div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
+
+let allPilots = [];
+
+fetch(SCRIPT_URL)
+.then(response => response.json())
+.then(data => {
+    allPilots = data.reverse();
+    showResults(allPilots);
+})
+.catch(error => {
+    document.getElementById("results").innerHTML =
+    '<div class="empty">Unable to load pilots.</div>';
+    console.log(error);
+});
+
+document.getElementById("searchInput").addEventListener("input", function(){
+    const search = this.value.toLowerCase().trim();
+
+    const filtered = allPilots.filter(pilot => {
+        return (
+            String(pilot.callsign || "").toLowerCase().includes(search) ||
+            String(pilot.firstName || "").toLowerCase().includes(search) ||
+            String(pilot.lastInitial || "").toLowerCase().includes(search) ||
+            String(pilot.aircraft || "").toLowerCase().includes(search) ||
+            String(pilot.notes || "").toLowerCase().includes(search)
+        );
+    });
+
+    showResults(filtered);
+});
+
+function showResults(pilots){
+
+    const results = document.getElementById("results");
+
+    if(pilots.length === 0){
+        results.innerHTML = '<div class="empty">No matching pilots found.</div>';
+        return;
+    }
+
+    let html = "";
+
+    pilots.forEach(pilot => {
+        html += `
+            <div class="card">
+                <a href="pilot.html?id=${pilot.pilotID}">
+                    <div class="callsign">${pilot.callsign || "Unknown"}</div>
+                </a>
+                <div class="meta">
+                    ${pilot.firstName || ""} ${pilot.lastInitial || ""} ·
+                    ${pilot.aircraft || "No aircraft"} ·
+                    ${pilot.timeSlot || "No time"}
+                </div>
+                <div class="meta">
+                    ${pilot.notes || ""}
+                </div>
+            </div>
+        `;
+    });
+
+    results.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
