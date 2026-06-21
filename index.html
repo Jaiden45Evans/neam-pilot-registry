@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NEAM Pilot Registry</title>
+
+<style>
+body{
+    background:#0b1220;
+    color:white;
+    font-family:Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    margin:0;
+}
+
+.card{
+    background:#172033;
+    padding:40px;
+    border-radius:15px;
+    width:400px;
+    box-shadow:0 0 20px rgba(0,0,0,.5);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:5px;
+}
+
+p{
+    text-align:center;
+    color:#aaa;
+    margin-bottom:25px;
+}
+
+input, select{
+    width:100%;
+    padding:12px;
+    margin-bottom:12px;
+    border:none;
+    border-radius:8px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    background:#1d4ed8;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#2563eb;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>NEAM Pilot Registry</h1>
+
+<p>Register your simulator session</p>
+
+<input id="firstName" placeholder="First Name">
+
+<input id="lastInitial" maxlength="1" placeholder="Last Initial">
+
+<input id="callsign" placeholder="Callsign">
+
+<select id="timeSlot">
+<option>10:00</option>
+<option>10:20</option>
+<option>10:40</option>
+<option>11:00</option>
+<option>11:20</option>
+<option>11:40</option>
+<option>12:00</option>
+<option>12:20</option>
+<option>12:40</option>
+<option>1:00</option>
+<option>1:20</option>
+<option>1:40</option>
+<option>2:00</option>
+<option>2:20</option>
+<option>2:40</option>
+<option>3:00</option>
+<option>3:20</option>
+<option>3:40</option>
+<option>4:00</option>
+</select>
+
+<button onclick="submitPilot()">
+Begin Session
+</button>
+
+</div>
+
+<script>
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
+
+function submitPilot(){
+
+const pilot = {
+pilotID: Date.now(),
+firstName: document.getElementById("firstName").value,
+lastInitial: document.getElementById("lastInitial").value,
+callsign: document.getElementById("callsign").value,
+timeSlot: document.getElementById("timeSlot").value
+};
+
+fetch(SCRIPT_URL,{
+method:"POST",
+body:JSON.stringify(pilot)
+})
+.then(response=>response.json())
+.then(data=>{
+alert("Registration Successful!");
+})
+.catch(error=>{
+alert("Error submitting registration");
+console.log(error);
+});
+
+}
+
+</script>
+
+</body>
+</html>
