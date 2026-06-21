@@ -4,12 +4,14 @@
 <title>NEAM Pilot Registry</title>
 
 <style>
-*{ box-sizing:border-box; }
+*{
+    box-sizing:border-box;
+}
 
 body{
     background:#0b1220;
     color:white;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -25,7 +27,10 @@ body{
     box-shadow:0 0 25px rgba(0,0,0,.55);
 }
 
-h1{ text-align:center; margin-bottom:8px; }
+h1{
+    text-align:center;
+    margin-bottom:8px;
+}
 
 p{
     text-align:center;
@@ -33,7 +38,8 @@ p{
     margin-bottom:25px;
 }
 
-input, select{
+input,
+select{
     width:100%;
     height:45px;
     padding:12px;
@@ -55,7 +61,14 @@ button{
     margin-top:4px;
 }
 
-button:hover{ background:#2563eb; }
+button:hover{
+    background:#2563eb;
+}
+
+button:disabled{
+    background:#64748b;
+    cursor:not-allowed;
+}
 
 .small{
     font-size:12px;
@@ -71,10 +84,13 @@ button:hover{ background:#2563eb; }
 <div class="card">
 
 <h1>NEAM Pilot Registry</h1>
+
 <p>Check in for your simulator session.</p>
 
 <input id="firstName" placeholder="First Name">
+
 <input id="lastInitial" maxlength="1" placeholder="Last Initial">
+
 <input id="callsign" placeholder="Callsign">
 
 <select id="aircraft">
@@ -111,7 +127,9 @@ button:hover{ background:#2563eb; }
 <option>4:00 PM</option>
 </select>
 
-<button onclick="submitPilot()">Begin Session</button>
+<button id="submitButton" onclick="submitPilot()">
+Begin Session
+</button>
 
 <p class="small">
 Your simulator score may be added after your flight. Public results should use first name, last initial, and callsign only.
@@ -120,9 +138,16 @@ Your simulator score may be added after your flight. Public results should use f
 </div>
 
 <script>
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
 
 function submitPilot(){
+
+    const button = document.getElementById("submitButton");
+
+    button.disabled = true;
+    button.innerText = "Submitting...";
+
     const firstName = document.getElementById("firstName").value.trim();
     const lastInitial = document.getElementById("lastInitial").value.trim().toUpperCase();
     const callsign = document.getElementById("callsign").value.trim();
@@ -130,7 +155,12 @@ function submitPilot(){
     const timeSlot = document.getElementById("timeSlot").value;
 
     if(!firstName || !lastInitial || !callsign || !aircraft || !timeSlot){
+
         alert("Please fill out all fields.");
+
+        button.disabled = false;
+        button.innerText = "Begin Session";
+
         return;
     }
 
@@ -147,20 +177,32 @@ function submitPilot(){
         method:"POST",
         body:JSON.stringify(pilot)
     })
-    .then(response=>response.json())
-    .then(data=>{
+    .then(response => response.json())
+    .then(data => {
+
         alert("Check-in complete. Good luck, pilot.");
+
         document.getElementById("firstName").value = "";
         document.getElementById("lastInitial").value = "";
         document.getElementById("callsign").value = "";
         document.getElementById("aircraft").value = "";
         document.getElementById("timeSlot").value = "";
+
+        button.innerText = "Submitted";
+
     })
-    .catch(error=>{
-        alert("Error submitting registration.");
+    .catch(error => {
+
         console.log(error);
+
+        alert("Error submitting registration.");
+
+        button.disabled = false;
+        button.innerText = "Begin Session";
+
     });
 }
+
 </script>
 
 </body>
