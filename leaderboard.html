@@ -91,7 +91,7 @@ body{
     color:#dbeafe;
 }
 
-.score{
+.kills{
     text-align:right;
     font-size:22px;
     font-weight:bold;
@@ -122,14 +122,14 @@ body{
 <div class="board">
 
     <div class="board-title">
-        TOP PILOTS
+        TOP PILOTS BY KILLS
     </div>
 
     <div class="row header-row">
         <div>RANK</div>
         <div>CALLSIGN</div>
         <div>AIRCRAFT</div>
-        <div>SCORE</div>
+        <div>KILLS</div>
     </div>
 
     <div id="leaderboardData">
@@ -149,12 +149,12 @@ fetch(SCRIPT_URL)
     const container = document.getElementById("leaderboardData");
 
     const scoredPilots = data
-        .filter(pilot => Number(pilot.score) > 0)
-        .sort((a,b) => Number(b.score) - Number(a.score));
+        .filter(pilot => Number(pilot.kills) > 0)
+        .sort((a,b) => Number(b.kills) - Number(a.kills));
 
     if(scoredPilots.length === 0){
         container.innerHTML =
-        '<div class="empty">No scores posted yet.</div>';
+        '<div class="empty">No kills posted yet.</div>';
         return;
     }
 
@@ -175,8 +175,8 @@ fetch(SCRIPT_URL)
                     ${pilot.aircraft || "Not Selected"}
                 </div>
 
-                <div class="score">
-                    ${pilot.score || 0}
+                <div class="kills">
+                    ${pilot.kills || 0}
                 </div>
             </div>
         `;
