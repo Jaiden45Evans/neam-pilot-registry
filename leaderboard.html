@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Leaderboard</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0b1220;
+    color:white;
+}
+
+.header{
+    text-align:center;
+    padding:35px;
+}
+
+.nav{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.nav a{
+    color:white;
+    text-decoration:none;
+    margin:0 10px;
+    padding:10px 18px;
+    background:#1d4ed8;
+    border-radius:8px;
+}
+
+.board{
+    max-width:1000px;
+    margin:auto;
+    background:#111827;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.title{
+    background:#1d4ed8;
+    padding:18px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:80px 1fr 150px;
+    padding:18px;
+    border-bottom:1px solid #263449;
+}
+
+.headerRow{
+    background:#172033;
+    color:#9ec8ff;
+    font-weight:bold;
+}
+
+.rank{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.score{
+    text-align:right;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Top Pilots</h1>
+    <p>New England Air Museum Simulator Registry</p>
+</div>
+
+<div class="nav">
+    <a href="index.html">Register</a>
+    <a href="active.html">Active Pilots</a>
+    <a href="leaderboard.html">Leaderboard</a>
+</div>
+
+<div class="board">
+
+<div class="title">
+🏆 LEADERBOARD
+</div>
+
+<div class="row headerRow">
+    <div>Rank</div>
+    <div>Pilot</div>
+    <div>Score</div>
+</div>
+
+<div id="leaderboardData">
+Loading...
+</div>
+
+</div>
+
+<script>
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
+
+fetch(SCRIPT_URL)
+.then(response => response.json())
+.then(data => {
+
+    data.sort((a,b)=>(Number(b.score)||0)-(Number(a.score)||0));
+
+    let html = "";
+
+    data.forEach((pilot,index)=>{
+
+        html += `
+        <div class="row">
+            <div class="rank">#${index+1}</div>
+            <div>
+                ${pilot.callsign}<br>
+                <small>${pilot.aircraft || ""}</small>
+            </div>
+            <div class="score">${pilot.score || 0}</div>
+        </div>
+        `;
+    });
+
+    document.getElementById("leaderboardData").innerHTML = html;
+
+})
+.catch(error=>{
+    console.log(error);
+    document.getElementById("leaderboardData").innerHTML =
+    "Unable to load leaderboard.";
+});
+
+</script>
+
+</body>
+</html>
