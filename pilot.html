@@ -4,16 +4,87 @@
 <title>Pilot Profile</title>
 
 <style>
+*{ box-sizing:border-box; }
+
 body{
     margin:0;
+    min-height:100vh;
     font-family:Arial,sans-serif;
-    background:#0b1220;
     color:white;
+    overflow-x:hidden;
+    background:linear-gradient(to bottom,#5fb8ff 0%,#9bdcff 45%,#dff6ff 100%);
+}
+
+.sky{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:0;
+}
+
+.sun-glow{
+    position:absolute;
+    width:520px;
+    height:520px;
+    top:-160px;
+    right:-120px;
+    background:radial-gradient(circle,rgba(255,255,255,.75),rgba(255,255,255,.22),rgba(255,255,255,0) 70%);
+    filter:blur(8px);
+}
+
+.cloud{
+    position:absolute;
+    width:360px;
+    height:120px;
+    background:rgba(255,255,255,.65);
+    border-radius:100px;
+    filter:blur(12px);
+    opacity:.75;
+    animation:cloudMove linear infinite;
+}
+
+.cloud::before,
+.cloud::after{
+    content:"";
+    position:absolute;
+    background:rgba(255,255,255,.75);
+    border-radius:50%;
+}
+
+.cloud::before{
+    width:180px;
+    height:180px;
+    left:45px;
+    top:-75px;
+}
+
+.cloud::after{
+    width:220px;
+    height:220px;
+    right:20px;
+    top:-105px;
+}
+
+.cloud1{ top:12%; left:-520px; animation-duration:70s; }
+.cloud2{ top:34%; left:-620px; width:460px; height:140px; animation-duration:95s; animation-delay:12s; opacity:.55; }
+.cloud3{ top:68%; left:-560px; width:420px; height:130px; animation-duration:85s; animation-delay:25s; opacity:.48; }
+.cloud4{ top:50%; left:-700px; width:600px; height:150px; animation-duration:120s; animation-delay:40s; opacity:.32; }
+
+@keyframes cloudMove{
+    from{ transform:translateX(-650px); }
+    to{ transform:translateX(150vw); }
+}
+
+.page{
+    position:relative;
+    z-index:5;
+    padding-bottom:40px;
 }
 
 .header{
     text-align:center;
     padding:35px 20px 20px;
+    text-shadow:0 2px 10px rgba(0,0,0,.35);
 }
 
 .header h1{
@@ -21,11 +92,16 @@ body{
     font-size:42px;
 }
 
+.header p{
+    color:#e5edf7;
+}
+
 .nav{
     display:flex;
     justify-content:center;
     gap:8px;
     margin-bottom:25px;
+    flex-wrap:wrap;
 }
 
 .nav a{
@@ -34,25 +110,33 @@ body{
     padding:9px 12px;
     background:#1d4ed8;
     border-radius:8px;
+    font-size:14px;
+}
+
+.nav a:hover{
+    background:#2563eb;
 }
 
 .profile{
-    max-width:850px;
+    max-width:900px;
     margin:auto;
-    background:#111827;
+    background:rgba(17,24,39,.88);
+    backdrop-filter:blur(12px);
     border-radius:14px;
     padding:30px;
-    box-shadow:0 0 25px rgba(0,0,0,.35);
+    box-shadow:0 0 35px rgba(0,0,0,.38);
+    border:1px solid rgba(255,255,255,.15);
 }
 
 .callsign{
-    font-size:42px;
+    font-size:46px;
     font-weight:bold;
 }
 
 .name{
     color:#9ec8ff;
     margin-bottom:25px;
+    font-size:18px;
 }
 
 .grid{
@@ -63,20 +147,30 @@ body{
 }
 
 .stat{
-    background:#172033;
+    background:rgba(23,32,51,.92);
     padding:18px;
     border-radius:10px;
+    border:1px solid rgba(255,255,255,.08);
 }
 
 .stat h3{
     margin:0 0 8px;
     color:#9ec8ff;
+    font-size:15px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+.stat-value{
+    font-size:24px;
+    font-weight:bold;
 }
 
 .notes{
-    background:#172033;
+    background:rgba(23,32,51,.92);
     padding:20px;
     border-radius:10px;
+    border:1px solid rgba(255,255,255,.08);
 }
 
 .notes h3{
@@ -88,8 +182,19 @@ body{
 
 <body>
 
+<div class="sky">
+    <div class="sun-glow"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="cloud cloud4"></div>
+</div>
+
+<div class="page">
+
 <div class="header">
     <h1>Pilot Profile</h1>
+    <p>New England Air Museum Simulator Operations Center</p>
 </div>
 
 <div class="nav">
@@ -101,6 +206,8 @@ body{
 
 <div class="profile" id="profile">
     Loading pilot profile...
+</div>
+
 </div>
 
 <script>
@@ -127,32 +234,32 @@ fetch(SCRIPT_URL)
         <div class="grid">
             <div class="stat">
                 <h3>Aircraft</h3>
-                ${pilot.aircraft || "Not listed"}
+                <div class="stat-value">${pilot.aircraft || "Not listed"}</div>
             </div>
 
             <div class="stat">
                 <h3>Kills</h3>
-                ${pilot.kills || 0}
+                <div class="stat-value">${pilot.kills || 0}</div>
             </div>
 
             <div class="stat">
                 <h3>Deaths</h3>
-                ${pilot.deaths || 0}
+                <div class="stat-value">${pilot.deaths || 0}</div>
             </div>
 
             <div class="stat">
                 <h3>Session Time</h3>
-                ${pilot.timeSlot || "No time"}
+                <div class="stat-value">${pilot.timeSlot || "No time"}</div>
             </div>
 
             <div class="stat">
                 <h3>Date</h3>
-                ${pilot.sessionDate || ""}
+                <div class="stat-value">${pilot.sessionDate || ""}</div>
             </div>
 
             <div class="stat">
                 <h3>Score</h3>
-                ${pilot.score || 0}
+                <div class="stat-value">${pilot.score || 0}</div>
             </div>
         </div>
 
