@@ -4,9 +4,7 @@
 <title>NEAM Pilot Registry</title>
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
     background:#0b1220;
@@ -27,10 +25,7 @@ body{
     box-shadow:0 0 25px rgba(0,0,0,.55);
 }
 
-h1{
-    text-align:center;
-    margin-bottom:8px;
-}
+h1{ text-align:center; margin-bottom:8px; }
 
 p{
     text-align:center;
@@ -60,9 +55,7 @@ button{
     margin-top:4px;
 }
 
-button:hover{
-    background:#2563eb;
-}
+button:hover{ background:#2563eb; }
 
 .small{
     font-size:12px;
@@ -78,14 +71,19 @@ button:hover{
 <div class="card">
 
 <h1>NEAM Pilot Registry</h1>
-
 <p>Check in for your simulator session.</p>
 
 <input id="firstName" placeholder="First Name">
-
 <input id="lastInitial" maxlength="1" placeholder="Last Initial">
-
 <input id="callsign" placeholder="Callsign">
+
+<select id="aircraft">
+<option value="">Select Aircraft</option>
+<option>F/A-18C Hornet</option>
+<option>F-16C Viper</option>
+<option>F-15C Eagle</option>
+<option>F-22A Raptor</option>
+</select>
 
 <select id="timeSlot">
 <option value="">Select Time Slot</option>
@@ -113,9 +111,7 @@ button:hover{
 <option>4:00 PM</option>
 </select>
 
-<button onclick="submitPilot()">
-Begin Session
-</button>
+<button onclick="submitPilot()">Begin Session</button>
 
 <p class="small">
 Your simulator score may be added after your flight. Public results should use first name, last initial, and callsign only.
@@ -124,48 +120,47 @@ Your simulator score may be added after your flight. Public results should use f
 </div>
 
 <script>
-
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
 
 function submitPilot(){
+    const firstName = document.getElementById("firstName").value.trim();
+    const lastInitial = document.getElementById("lastInitial").value.trim().toUpperCase();
+    const callsign = document.getElementById("callsign").value.trim();
+    const aircraft = document.getElementById("aircraft").value;
+    const timeSlot = document.getElementById("timeSlot").value;
 
-const firstName = document.getElementById("firstName").value.trim();
-const lastInitial = document.getElementById("lastInitial").value.trim().toUpperCase();
-const callsign = document.getElementById("callsign").value.trim();
-const timeSlot = document.getElementById("timeSlot").value;
+    if(!firstName || !lastInitial || !callsign || !aircraft || !timeSlot){
+        alert("Please fill out all fields.");
+        return;
+    }
 
-if(!firstName || !lastInitial || !callsign || !timeSlot){
-    alert("Please fill out all fields.");
-    return;
+    const pilot = {
+        pilotID: Date.now(),
+        firstName: firstName,
+        lastInitial: lastInitial,
+        callsign: callsign,
+        aircraft: aircraft,
+        timeSlot: timeSlot
+    };
+
+    fetch(SCRIPT_URL,{
+        method:"POST",
+        body:JSON.stringify(pilot)
+    })
+    .then(response=>response.json())
+    .then(data=>{
+        alert("Check-in complete. Good luck, pilot.");
+        document.getElementById("firstName").value = "";
+        document.getElementById("lastInitial").value = "";
+        document.getElementById("callsign").value = "";
+        document.getElementById("aircraft").value = "";
+        document.getElementById("timeSlot").value = "";
+    })
+    .catch(error=>{
+        alert("Error submitting registration.");
+        console.log(error);
+    });
 }
-
-const pilot = {
-pilotID: Date.now(),
-firstName: firstName,
-lastInitial: lastInitial,
-callsign: callsign,
-timeSlot: timeSlot
-};
-
-fetch(SCRIPT_URL,{
-method:"POST",
-body:JSON.stringify(pilot)
-})
-.then(response=>response.json())
-.then(data=>{
-alert("Check-in complete. Good luck, pilot.");
-document.getElementById("firstName").value = "";
-document.getElementById("lastInitial").value = "";
-document.getElementById("callsign").value = "";
-document.getElementById("timeSlot").value = "";
-})
-.catch(error=>{
-alert("Error submitting registration.");
-console.log(error);
-});
-
-}
-
 </script>
 
 </body>
