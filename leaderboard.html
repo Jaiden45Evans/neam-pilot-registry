@@ -13,46 +13,65 @@ body{
 
 .header{
     text-align:center;
-    padding:35px;
+    padding:35px 20px 20px;
+}
+
+.header h1{
+    margin:0;
+    font-size:42px;
+}
+
+.header p{
+    color:#b8c2d6;
 }
 
 .nav{
-    text-align:center;
+    display:flex;
+    justify-content:center;
+    gap:8px;
     margin-bottom:25px;
+    flex-wrap:wrap;
 }
 
 .nav a{
     color:white;
     text-decoration:none;
-    margin:0 10px;
-    padding:10px 18px;
+    padding:9px 12px;
     background:#1d4ed8;
     border-radius:8px;
+    font-size:14px;
+}
+
+.nav a:hover{
+    background:#2563eb;
 }
 
 .board{
-    max-width:1000px;
+    max-width:1100px;
     margin:auto;
     background:#111827;
     border-radius:14px;
     overflow:hidden;
+    box-shadow:0 0 25px rgba(0,0,0,.35);
 }
 
-.title{
+.board-title{
     background:#1d4ed8;
     padding:18px;
     font-size:24px;
     font-weight:bold;
+    letter-spacing:1px;
 }
 
 .row{
     display:grid;
-    grid-template-columns:80px 1fr 150px;
+    grid-template-columns:90px 1fr 1fr 140px;
     padding:18px;
     border-bottom:1px solid #263449;
+    align-items:center;
 }
 
-.headerRow{
+.row.header-row{
     background:#172033;
     color:#9ec8ff;
     font-weight:bold;
@@ -63,9 +82,26 @@ body{
     font-weight:bold;
 }
 
+.callsign{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.aircraft{
+    color:#dbeafe;
+}
+
 .score{
     text-align:right;
+    font-size:22px;
     font-weight:bold;
+    color:#facc15;
+}
+
+.empty{
+    padding:30px;
+    text-align:center;
+    color:#94a3b8;
 }
 </style>
 </head>
@@ -73,8 +109,8 @@ body{
 <body>
 
 <div class="header">
-    <h1>Top Pilots</h1>
-    <p>New England Air Museum Simulator Registry</p>
+    <h1>Leaderboard</h1>
+    <p>New England Air Museum Simulator Operations Center</p>
 </div>
 
 <div class="nav">
@@ -85,19 +121,20 @@ body{
 
 <div class="board">
 
-<div class="title">
-🏆 LEADERBOARD
-</div>
+    <div class="board-title">
+        TOP PILOTS
+    </div>
 
-<div class="row headerRow">
-    <div>Rank</div>
-    <div>Pilot</div>
-    <div>Score</div>
-</div>
+    <div class="row header-row">
+        <div>RANK</div>
+        <div>CALLSIGN</div>
+        <div>AIRCRAFT</div>
+        <div>SCORE</div>
+    </div>
 
-<div id="leaderboardData">
-Loading...
-</div>
+    <div id="leaderboardData">
+        <div class="empty">Loading leaderboard...</div>
+    </div>
 
 </div>
 
@@ -109,31 +146,53 @@ fetch(SCRIPT_URL)
 .then(response => response.json())
 .then(data => {
 
-    data.sort((a,b)=>(Number(b.score)||0)-(Number(a.score)||0));
+    const container = document.getElementById("leaderboardData");
+
+    const scoredPilots = data
+        .filter(pilot => Number(pilot.score) > 0)
+        .sort((a,b) => Number(b.score) - Number(a.score));
+
+    if(scoredPilots.length === 0){
+        container.innerHTML =
+        '<div class="empty">No scores posted yet.</div>';
+        return;
+    }
 
     let html = "";
 
-    data.forEach((pilot,index)=>{
+    scoredPilots.forEach((pilot,index) => {
 
         html += `
-        <div class="row">
-            <div class="rank">#${index+1}</div>
-            <div>
-                ${pilot.callsign}<br>
-                <small>${pilot.aircraft || ""}</small>
+            <div class="row">
+                <div class="rank">#${index + 1}</div>
+
+                <div>
+                    <div class="callsign">${pilot.callsign || "Unknown"}</div>
+                    <div>${pilot.firstName || ""} ${pilot.lastInitial || ""}</div>
+                </div>
+
+                <div class="aircraft">
+                    ${pilot.aircraft || "Not Selected"}
+                </div>
+
+                <div class="score">
+                    ${pilot.score || 0}
+                </div>
             </div>
-            <div class="score">${pilot.score || 0}</div>
-        </div>
         `;
+
     });
 
-    document.getElementById("leaderboardData").innerHTML = html;
+    container.innerHTML = html;
 
 })
-.catch(error=>{
-    console.log(error);
+.catch(error => {
+
     document.getElementById("leaderboardData").innerHTML =
-    "Unable to load leaderboard.";
+    '<div class="empty">Unable to load leaderboard.</div>';
+
+    console.log(error);
+
 });
 
 </script>
