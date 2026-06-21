@@ -26,17 +26,24 @@ body{
 }
 
 .nav{
-    text-align:center;
-    margin-bottom:30px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
 }
 
 .nav a{
     color:white;
     text-decoration:none;
-    margin:0 10px;
-    padding:11px 18px;
+    padding:9px 12px;
     background:#1d4ed8;
     border-radius:8px;
+    font-size:14px;
+}
+
+.nav a:hover{
+    background:#2563eb;
 }
 
 .board{
@@ -95,16 +102,20 @@ body{
 
 <div class="header">
     <h1>Active Pilots</h1>
-    <p>New England Air Museum Simulator Registry</p>
+    <p>New England Air Museum Simulator Operations Center</p>
 </div>
 
 <div class="nav">
     <a href="index.html">Register</a>
     <a href="active.html">Active Pilots</a>
+    <a href="leaderboard.html">Leaderboard</a>
 </div>
 
 <div class="board">
-    <div class="board-title">CURRENT FLIGHTS</div>
+
+    <div class="board-title">
+        CURRENT FLIGHTS
+    </div>
 
     <div class="row header-row">
         <div>CALLSIGN</div>
@@ -115,9 +126,11 @@ body{
     <div id="pilotList">
         <div class="empty">Loading pilots...</div>
     </div>
+
 </div>
 
 <script>
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
 
 fetch(SCRIPT_URL)
@@ -130,7 +143,8 @@ fetch(SCRIPT_URL)
     data.reverse();
 
     if(data.length === 0){
-        container.innerHTML = '<div class="empty">No pilots checked in yet.</div>';
+        container.innerHTML =
+        '<div class="empty">No pilots checked in yet.</div>';
         return;
     }
 
@@ -144,8 +158,14 @@ fetch(SCRIPT_URL)
                 <div class="callsign">${pilot.callsign || "Unknown"}</div>
                 <div>${pilot.firstName || ""} ${pilot.lastInitial || ""}</div>
             </div>
-            <div class="aircraft">${pilot.aircraft || "Not selected"}</div>
-            <div class="time">${pilot.timeSlot || "No time listed"}</div>
+
+            <div class="aircraft">
+                ${pilot.aircraft || "Not Selected"}
+            </div>
+
+            <div class="time">
+                ${pilot.timeSlot || "No Time"}
+            </div>
         `;
 
         container.appendChild(row);
@@ -154,10 +174,14 @@ fetch(SCRIPT_URL)
 
 })
 .catch(error => {
+
     document.getElementById("pilotList").innerHTML =
     '<div class="empty">Unable to load pilot data.</div>';
+
     console.log(error);
+
 });
+
 </script>
 
 </body>
