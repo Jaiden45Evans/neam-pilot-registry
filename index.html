@@ -4,6 +4,10 @@
 <title>NEAM Pilot Registry</title>
 
 <style>
+*{
+    box-sizing:border-box;
+}
+
 body{
     background:#0b1220;
     color:white;
@@ -19,42 +23,52 @@ body{
     background:#172033;
     padding:40px;
     border-radius:15px;
-    width:400px;
-    box-shadow:0 0 20px rgba(0,0,0,.5);
+    width:430px;
+    box-shadow:0 0 25px rgba(0,0,0,.55);
 }
 
 h1{
     text-align:center;
-    margin-bottom:5px;
+    margin-bottom:8px;
 }
 
 p{
     text-align:center;
-    color:#aaa;
+    color:#b8c2d6;
     margin-bottom:25px;
 }
 
 input, select{
     width:100%;
+    height:45px;
     padding:12px;
     margin-bottom:12px;
     border:none;
     border-radius:8px;
+    font-size:15px;
 }
 
 button{
     width:100%;
-    padding:14px;
+    height:48px;
     background:#1d4ed8;
     color:white;
     border:none;
     border-radius:8px;
     cursor:pointer;
     font-size:16px;
+    margin-top:4px;
 }
 
 button:hover{
     background:#2563eb;
+}
+
+.small{
+    font-size:12px;
+    color:#8f9bb3;
+    margin-top:18px;
+    line-height:1.4;
 }
 </style>
 </head>
@@ -65,7 +79,7 @@ button:hover{
 
 <h1>NEAM Pilot Registry</h1>
 
-<p>Register your simulator session</p>
+<p>Check in for your simulator session.</p>
 
 <input id="firstName" placeholder="First Name">
 
@@ -74,30 +88,38 @@ button:hover{
 <input id="callsign" placeholder="Callsign">
 
 <select id="timeSlot">
-<option>10:00</option>
-<option>10:20</option>
-<option>10:40</option>
-<option>11:00</option>
-<option>11:20</option>
-<option>11:40</option>
-<option>12:00</option>
-<option>12:20</option>
-<option>12:40</option>
-<option>1:00</option>
-<option>1:20</option>
-<option>1:40</option>
-<option>2:00</option>
-<option>2:20</option>
-<option>2:40</option>
-<option>3:00</option>
-<option>3:20</option>
-<option>3:40</option>
-<option>4:00</option>
+<option value="">Select Time Slot</option>
+<option>9:00 AM</option>
+<option>9:20 AM</option>
+<option>9:40 AM</option>
+<option>10:00 AM</option>
+<option>10:20 AM</option>
+<option>10:40 AM</option>
+<option>11:00 AM</option>
+<option>11:20 AM</option>
+<option>11:40 AM</option>
+<option>12:00 PM</option>
+<option>12:20 PM</option>
+<option>12:40 PM</option>
+<option>1:00 PM</option>
+<option>1:20 PM</option>
+<option>1:40 PM</option>
+<option>2:00 PM</option>
+<option>2:20 PM</option>
+<option>2:40 PM</option>
+<option>3:00 PM</option>
+<option>3:20 PM</option>
+<option>3:40 PM</option>
+<option>4:00 PM</option>
 </select>
 
 <button onclick="submitPilot()">
 Begin Session
 </button>
+
+<p class="small">
+Your simulator score may be added after your flight. Public results should use first name, last initial, and callsign only.
+</p>
 
 </div>
 
@@ -107,12 +129,22 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4M
 
 function submitPilot(){
 
+const firstName = document.getElementById("firstName").value.trim();
+const lastInitial = document.getElementById("lastInitial").value.trim().toUpperCase();
+const callsign = document.getElementById("callsign").value.trim();
+const timeSlot = document.getElementById("timeSlot").value;
+
+if(!firstName || !lastInitial || !callsign || !timeSlot){
+    alert("Please fill out all fields.");
+    return;
+}
+
 const pilot = {
 pilotID: Date.now(),
-firstName: document.getElementById("firstName").value,
-lastInitial: document.getElementById("lastInitial").value,
-callsign: document.getElementById("callsign").value,
-timeSlot: document.getElementById("timeSlot").value
+firstName: firstName,
+lastInitial: lastInitial,
+callsign: callsign,
+timeSlot: timeSlot
 };
 
 fetch(SCRIPT_URL,{
@@ -121,10 +153,14 @@ body:JSON.stringify(pilot)
 })
 .then(response=>response.json())
 .then(data=>{
-alert("Registration Successful!");
+alert("Check-in complete. Good luck, pilot.");
+document.getElementById("firstName").value = "";
+document.getElementById("lastInitial").value = "";
+document.getElementById("callsign").value = "";
+document.getElementById("timeSlot").value = "";
 })
 .catch(error=>{
-alert("Error submitting registration");
+alert("Error submitting registration.");
 console.log(error);
 });
 
