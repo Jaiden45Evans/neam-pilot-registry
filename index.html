@@ -152,20 +152,33 @@ button:disabled{
     cursor:not-allowed;
 }
 
-.keyboard-toggle{
-    background:#0f766e;
-    margin-bottom:12px;
-}
-
-.keyboard-toggle:hover{
-    background:#0d9488;
-}
-
 .small{
     font-size:12px;
     color:#aab8ca;
     margin-top:18px;
     line-height:1.4;
+}
+
+/* FLOATING KEYBOARD BUTTON */
+.keyboard-toggle{
+    position:fixed;
+    right:28px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:9998;
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:#0f766e;
+    box-shadow:0 0 25px rgba(0,0,0,.35);
+    font-size:30px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.keyboard-toggle:hover{
+    background:#0d9488;
 }
 
 /* ON-SCREEN KEYBOARD */
@@ -212,6 +225,10 @@ button:disabled{
 .key.space{
     min-width:280px;
 }
+
+.key.shift-on{
+    background:#f59e0b;
+}
 </style>
 </head>
 
@@ -224,6 +241,8 @@ button:disabled{
     <div class="cloud cloud3"></div>
     <div class="cloud cloud4"></div>
 </div>
+
+<button type="button" class="keyboard-toggle" onclick="toggleKeyboard()">⌨</button>
 
 <div class="card">
 
@@ -240,8 +259,6 @@ button:disabled{
 <input id="firstName" placeholder="First Name" autocomplete="off">
 <input id="lastInitial" maxlength="1" placeholder="Last Initial" autocomplete="off">
 <input id="callsign" placeholder="Callsign" autocomplete="off">
-
-<button type="button" class="keyboard-toggle" onclick="toggleKeyboard()">On-Screen Keyboard</button>
 
 <select id="aircraft">
 <option value="">Select Aircraft</option>
@@ -287,38 +304,39 @@ Your simulator score may be added after your flight. Public results should use f
 
 <div class="keyboard" id="keyboard">
     <div class="keyboard-row">
-        <button class="key" onclick="typeKey('Q')">Q</button>
-        <button class="key" onclick="typeKey('W')">W</button>
-        <button class="key" onclick="typeKey('E')">E</button>
-        <button class="key" onclick="typeKey('R')">R</button>
-        <button class="key" onclick="typeKey('T')">T</button>
-        <button class="key" onclick="typeKey('Y')">Y</button>
-        <button class="key" onclick="typeKey('U')">U</button>
-        <button class="key" onclick="typeKey('I')">I</button>
-        <button class="key" onclick="typeKey('O')">O</button>
-        <button class="key" onclick="typeKey('P')">P</button>
+        <button class="key letter-key" onclick="typeKey('q')">q</button>
+        <button class="key letter-key" onclick="typeKey('w')">w</button>
+        <button class="key letter-key" onclick="typeKey('e')">e</button>
+        <button class="key letter-key" onclick="typeKey('r')">r</button>
+        <button class="key letter-key" onclick="typeKey('t')">t</button>
+        <button class="key letter-key" onclick="typeKey('y')">y</button>
+        <button class="key letter-key" onclick="typeKey('u')">u</button>
+        <button class="key letter-key" onclick="typeKey('i')">i</button>
+        <button class="key letter-key" onclick="typeKey('o')">o</button>
+        <button class="key letter-key" onclick="typeKey('p')">p</button>
     </div>
 
     <div class="keyboard-row">
-        <button class="key" onclick="typeKey('A')">A</button>
-        <button class="key" onclick="typeKey('S')">S</button>
-        <button class="key" onclick="typeKey('D')">D</button>
-        <button class="key" onclick="typeKey('F')">F</button>
-        <button class="key" onclick="typeKey('G')">G</button>
-        <button class="key" onclick="typeKey('H')">H</button>
-        <button class="key" onclick="typeKey('J')">J</button>
-        <button class="key" onclick="typeKey('K')">K</button>
-        <button class="key" onclick="typeKey('L')">L</button>
+        <button class="key letter-key" onclick="typeKey('a')">a</button>
+        <button class="key letter-key" onclick="typeKey('s')">s</button>
+        <button class="key letter-key" onclick="typeKey('d')">d</button>
+        <button class="key letter-key" onclick="typeKey('f')">f</button>
+        <button class="key letter-key" onclick="typeKey('g')">g</button>
+        <button class="key letter-key" onclick="typeKey('h')">h</button>
+        <button class="key letter-key" onclick="typeKey('j')">j</button>
+        <button class="key letter-key" onclick="typeKey('k')">k</button>
+        <button class="key letter-key" onclick="typeKey('l')">l</button>
     </div>
 
     <div class="keyboard-row">
-        <button class="key" onclick="typeKey('Z')">Z</button>
-        <button class="key" onclick="typeKey('X')">X</button>
-        <button class="key" onclick="typeKey('C')">C</button>
-        <button class="key" onclick="typeKey('V')">V</button>
-        <button class="key" onclick="typeKey('B')">B</button>
-        <button class="key" onclick="typeKey('N')">N</button>
-        <button class="key" onclick="typeKey('M')">M</button>
+        <button id="shiftKey" class="key wide" onclick="toggleShift()">Shift</button>
+        <button class="key letter-key" onclick="typeKey('z')">z</button>
+        <button class="key letter-key" onclick="typeKey('x')">x</button>
+        <button class="key letter-key" onclick="typeKey('c')">c</button>
+        <button class="key letter-key" onclick="typeKey('v')">v</button>
+        <button class="key letter-key" onclick="typeKey('b')">b</button>
+        <button class="key letter-key" onclick="typeKey('n')">n</button>
+        <button class="key letter-key" onclick="typeKey('m')">m</button>
         <button class="key wide" onclick="backspaceKey()">⌫</button>
     </div>
 
@@ -332,6 +350,7 @@ Your simulator score may be added after your flight. Public results should use f
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHkwKVSKavKNFNJ-U4MRojMF9deaUUIt3TVNGbb81k9E5Z4yY1D44pBL168GVcxFWemw/exec";
 
 let activeInput = null;
+let shiftOn = false;
 
 document.querySelectorAll("input").forEach(input => {
     input.addEventListener("focus", () => {
@@ -354,6 +373,27 @@ function toggleKeyboard(){
     }
 }
 
+function toggleShift(){
+    shiftOn = !shiftOn;
+
+    const shiftKey = document.getElementById("shiftKey");
+    const letterKeys = document.querySelectorAll(".letter-key");
+
+    if(shiftOn){
+        shiftKey.classList.add("shift-on");
+        letterKeys.forEach(key => {
+            key.innerText = key.innerText.toUpperCase();
+        });
+    }else{
+        shiftKey.classList.remove("shift-on");
+        letterKeys.forEach(key => {
+            key.innerText = key.innerText.toLowerCase();
+        });
+    }
+
+    if(activeInput) activeInput.focus();
+}
+
 function typeKey(letter){
     if(!activeInput) return;
 
@@ -361,7 +401,9 @@ function typeKey(letter){
         return;
     }
 
-    activeInput.value += letter;
+    let finalLetter = shiftOn ? letter.toUpperCase() : letter.toLowerCase();
+
+    activeInput.value += finalLetter;
     activeInput.focus();
 }
 
