@@ -181,6 +181,78 @@ button:disabled{
     background:#0d9488;
 }
 
+/* FLOATING QR BUTTON */
+.qr-toggle{
+    position:fixed;
+    right:28px;
+    top:calc(50% + 90px);
+    transform:translateY(-50%);
+    z-index:9998;
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:#1d4ed8;
+    box-shadow:0 0 25px rgba(0,0,0,.35);
+    font-size:30px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.qr-toggle:hover{
+    background:#2563eb;
+}
+
+/* QR POPUP */
+.qr-popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:10000;
+}
+
+.qr-box{
+    background:rgba(8,15,30,.96);
+    padding:30px;
+    border-radius:20px;
+    width:390px;
+    text-align:center;
+    box-shadow:0 0 45px rgba(0,0,0,.6);
+    border:1px solid rgba(255,255,255,.2);
+}
+
+.qr-box h2{
+    margin-top:0;
+    margin-bottom:10px;
+    font-size:28px;
+}
+
+.qr-box p{
+    color:#d6e4f0;
+    margin-bottom:18px;
+    line-height:1.4;
+}
+
+.qr-box img{
+    width:270px;
+    height:270px;
+    background:white;
+    padding:10px;
+    border-radius:14px;
+    margin-bottom:20px;
+}
+
+.qr-close{
+    background:#1d4ed8;
+}
+
+.qr-close:hover{
+    background:#2563eb;
+}
+
 /* ON-SCREEN KEYBOARD */
 .keyboard{
     position:fixed;
@@ -243,6 +315,16 @@ button:disabled{
 </div>
 
 <button type="button" class="keyboard-toggle" onclick="toggleKeyboard()">⌨</button>
+<button type="button" class="qr-toggle" onclick="showQR()">📱</button>
+
+<div class="qr-popup" id="qrPopup">
+    <div class="qr-box">
+        <h2>Scan to Open</h2>
+        <p>Scan this QR code with your phone to open the NEAM Pilot Registry.</p>
+        <img src="qr-code.jpg" alt="NEAM Pilot Registry QR Code">
+        <button class="qr-close" onclick="hideQR()">Close</button>
+    </div>
+</div>
 
 <div class="card">
 
@@ -357,6 +439,14 @@ document.querySelectorAll("input").forEach(input => {
         activeInput = input;
     });
 });
+
+function showQR(){
+    document.getElementById("qrPopup").style.display = "flex";
+}
+
+function hideQR(){
+    document.getElementById("qrPopup").style.display = "none";
+}
 
 function toggleKeyboard(){
     const keyboard = document.getElementById("keyboard");
